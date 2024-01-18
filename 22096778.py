@@ -6,9 +6,6 @@ import scipy.optimize as opt
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import os
-os.environ["OMP_NUM_THREADS"] = '1'
-pd.options.mode.chained_assignment = None
 
 
 def read_file(fn):
