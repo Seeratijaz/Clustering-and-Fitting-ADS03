@@ -6,6 +6,9 @@ import scipy.optimize as opt
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
+import os
+os.environ["OMP_NUM_THREADS"] = '1'
+pd.options.mode.chained_assignment = None
 
 
 def read_file(fn):
@@ -79,7 +82,7 @@ def make_clusters(
     # extract labels and cluster centres
     labels = kmeans.labels_
     cen = kmeans.cluster_centers_
-    plt.figure(figsize=(8, 8))
+    plt.figure()
     # scatter plot with colours selected using the cluster numbers
     # now using the original dataframe
     scatter = plt.scatter(df[Feature1], df[Feature2], c=labels, cmap="tab10")
@@ -93,7 +96,7 @@ def make_clusters(
     plt.title(tit)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig('Clustering.png', dpi=300)
+    plt.savefig('Clustering'+'.png', dpi=300)
     plt.show()
 
 
@@ -199,7 +202,7 @@ make_clusters(
     'Forest_Area',
     'Co2 Emissions Per Capita',
     'Forest Area',
-    'Co2 Emissions Per Capita vs GDP Forest Area in United States',
+    'Co2 Emissions Per Capita vs Forest Area in United States',
     2,
     df_fit,
     df_min,
@@ -212,12 +215,12 @@ popt, pcorr = opt.curve_fit(poly, df_FA.index, df_FA[country])
 df_FA["pop_poly"] = poly(df_FA.index, *popt)
 plt.figure()
 plt.plot(df_FA.index, df_FA[country], label="data")
-plt.plot(df_FA.index, df_FA["pop_poly"], label="fit")
+plt.plot(df_FA.index, df_FA["pop_poly"], label="fit", color="lightgreen")
 plt.legend()
 plt.xlabel('Years')
 plt.ylabel('Forest Area')
 plt.title('Forest Area in United States 1990-2020')
-plt.savefig(country + '_.png', dpi=300)
+plt.savefig('Forest.png', dpi=300)
 years = np.linspace(1990, 2030)
 # Using the Ploy Funtion to get Forecast Values
 pop_ploy = poly(years, *popt)
@@ -226,14 +229,14 @@ low = pop_ploy - sigma
 up = pop_ploy + sigma
 plt.figure()
 plt.plot(df_FA.index, df_FA[country], label="data")
-plt.plot(years, pop_ploy, label="Forecast")
+plt.plot(years, pop_ploy, label="Forecast", color="lightgreen")
 # plot error ranges with transparency
-plt.fill_between(years, low, up, alpha=0.5, color="y")
+plt.fill_between(years, low, up, alpha=0.5, color="lightgreen")
 plt.legend(loc="upper left")
 plt.xlabel('Years')
 plt.ylabel('Forest Area')
 plt.title('Forest Area in United States Forecast')
-plt.savefig(country + '__forecast.png', dpi=300)
+plt.savefig('Forest_forecast.png', dpi=300)
 plt.show()
 
 # Fitting and Forecasting
@@ -243,12 +246,12 @@ popt, pcorr = opt.curve_fit(poly, df_co2.index, df_co2[country])
 df_co2["pop_poly"] = poly(df_co2.index, *popt)
 plt.figure()
 plt.plot(df_co2.index, df_co2[country], label="data")
-plt.plot(df_co2.index, df_co2["pop_poly"], label="fit")
+plt.plot(df_co2.index, df_co2["pop_poly"], label="fit", color="lightgreen")
 plt.legend()
 plt.xlabel('Years')
 plt.ylabel('Co2 Emissions Per Capita')
 plt.title('Co2 Emissions Per Capita in United States 1990-2020')
-plt.savefig(country + '_.png', dpi=300)
+plt.savefig('Co2.png', dpi=300)
 years = np.linspace(1990, 2030)
 pop_poly = poly(years, *popt)
 sigma = err.error_prop(years, poly, popt, pcorr)
@@ -257,12 +260,12 @@ low = pop_poly - sigma
 up = pop_poly + sigma
 plt.figure()
 plt.plot(df_co2.index, df_co2[country], label="data")
-plt.plot(years, pop_poly, label="Forecast")
+plt.plot(years, pop_poly, label="Forecast", color="lightgreen")
 # plot error ranges with transparency
-plt.fill_between(years, low, up, alpha=0.5, color="y")
+plt.fill_between(years, low, up, alpha=0.5, color="lightgreen")
 plt.legend(loc="upper left")
 plt.xlabel('Years')
 plt.ylabel('Co2 Emissions Per Capita')
 plt.title('Co2 Emissions Per Capita in United States Forecast')
-plt.savefig(country + '__forecast.png', dpi=300)
+plt.savefig('Co2forecast.png', dpi=300)
 plt.show()
